@@ -52,9 +52,10 @@ const sum_to_n_c = function(n) {
 };
 
 function main() {
-    const sumA = sum_to_n_a(5);
-    const sumB = sum_to_n_b(5);
-    const sumC = sum_to_n_c(5);
+    const n = 5;
+    const sumA = sum_to_n_a(n);
+    const sumB = sum_to_n_b(n);
+    const sumC = sum_to_n_c(n);
     console.log("sumA", sumA);
     console.log("sumB", sumB);
     console.log("sumC", sumC);
