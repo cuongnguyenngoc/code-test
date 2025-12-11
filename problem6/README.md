@@ -1,7 +1,7 @@
 ## Functional Requirements
 
-1. **User Score Update**
-    - Endpoint: `POST /api/score/update`
+1. **User Do Action and Score Update in Backend side**
+    - Endpoint: `POST /api/action/do`
     - Headers:
       ```http
       Authorization: Bearer <jwt_token>
@@ -83,7 +83,7 @@
 
 1. User login, backend send back jwt_token
 2. User completes an action on the website.
-3. Frontend sends `POST /api/score/update` with `actionId` and `jwt_token` in headers.
+3. Frontend sends `POST /api/action/do` with `actionId` in body and `jwt_token` in headers.
 4. Backend validates `jwt_token` and `actionId`.
 5. If valid, backend updates the score in the database (and cache).
 6. Backend fetches the updated top 10 scores.
