@@ -81,11 +81,13 @@
 
 ### Execution Flow
 
-1. User login and establishes a websocket connection, backend validates, if ok, send back `jwt_token` for authentication
+1. User login, backend validates, if ok, send back `jwt_token` for authentication and establishes a websocket connection
 2. User completes an action on the website.
 3. Frontend sends `POST /api/action/do` with `actionId` in body and `jwt_token` in headers.
-4. Backend validates `jwt_token` and `actionId`.
-5. If valid, backend updates the score in the database based on the actionId (and cache).
+4. Backend validates `jwt_token`, extract userId from it and call db to validate `actionId`.
+5. If valid, backend updates the score in the database (and cache) based on the actionId score config.
 6. Backend fetches the updated top 10 scores.
 7. Backend broadcasts the updated top 10 scores to all connected clients via WebSocket.
 8. Frontend displays the updated top 10 live.
+
+![Preview1](flow-diagram.png)
