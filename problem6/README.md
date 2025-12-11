@@ -22,8 +22,8 @@
       ```
     - Description:
       - Extracts `userId` from the `jwt_token`.
-      - Validates `actionId` to determine how much score to increment (configured in DB or in json/csv file).
-      - Updates the user’s score in the database.
+      - Validates `actionId` and check completion to determine how much score to increment (check action score configuration in DB or in json/csv file).
+      - Updates the user's score in the database.
       - Updates cached top 10 scores.
       - Broadcasts updated top 10 scores to all connected clients via WebSocket.
 
@@ -85,7 +85,7 @@
 2. User completes an action on the website.
 3. Frontend sends `POST /api/action/do` with `actionId` in body and `jwt_token` in headers.
 4. Backend validates `jwt_token`, extract userId from it and call db to validate `actionId`.
-5. If valid, backend updates the score in the database (and cache) based on the actionId score config.
+5. If valid and action completed, backend updates the score in the database (and cache) based on the actionId score config.
 6. Backend fetches the updated top 10 scores.
 7. Backend broadcasts the updated top 10 scores to all connected clients via WebSocket.
 8. Frontend displays the updated top 10 live.
