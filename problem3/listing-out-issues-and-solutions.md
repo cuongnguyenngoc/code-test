@@ -10,7 +10,13 @@ interface FormattedWalletBalance extends WalletBalance {
 }
 ```
 
-2. `getPriority` has some anti-patterns issue
+2. `WalletPage` function is not export so it will not be able to be used anywhere
+Fix:
+```typescript
+export const WalletPage: React.FC<Props> = (props: Props) => {
+```
+
+3. `getPriority` has some anti-patterns issue
 - `any` should be avoid as much as possible, param `blockchain` of function `getPriority`, it should have type `string` instead of `any` to avoid unintended value
 - `Zilliqa` and `Neo` value have same return `20` so we can shortern code by 
 ```typescript
@@ -33,13 +39,13 @@ function getPriority(blockchain: string): number {
 }
 ```
 
-3. Incorrect filtering logic, condition, referencing undefined variables
+4. Incorrect filtering logic, condition, referencing undefined variables
 - Inside the `filter` of `useMemo` code block
 ```typescript
 const balancePriority = getPriority(balance.blockchain);
 if (lhsPriority > -99) {
 ```
-`lhsPriority` is undefined, causing the filter to behave incorrectly and will throw runtime error.
+`lhsPriority` is undefined, causing the filter to behave incorrectly and will throw error.
 
 - Incorrect filter condition (wrong logic)
 ```typescript
@@ -69,10 +75,11 @@ Fix:
       ...b,
       priority: getPriority(b.blockchain), // compute once per item
     }))
+    .filter((b) => b.priority > -1)
     .sort((a, b) => b.priority - a.priority); // simplified comparator
 ```
 
-4. No type for `blockchain` in `WalletBalance`
+5. No type for `blockchain` in `WalletBalance`
 ```typescript
 currency: string;
 amount: number;
@@ -92,7 +99,7 @@ interface WalletBalance {
 }
 ```
 
-5. `Prices` dependency in useMemo is not used
+6. `Prices` dependency in useMemo is not used
 ```typescript
 const sortedBalances = useMemo(..., [balances, prices]);
 ```
@@ -103,7 +110,7 @@ Fix:
 const sortedBalances = useMemo(..., [balances]);
 ```
 
-6. Using `.toFixed()` without specifying decimals
+7. Using `.toFixed()` without specifying decimals
 ```typescript
 balance.amount.toFixed()
 ```
@@ -114,7 +121,7 @@ Fix:
 balance.amount.toFixed(2)
 ```
 
-7. Mapping `formattedBalances` is unused
+8. Mapping `formattedBalances` is unused
 `formattedBalances` is calculated:
 ```typescript
 const formattedBalances = sortedBalances.map(...)
@@ -122,7 +129,7 @@ const formattedBalances = sortedBalances.map(...)
 
 But not used => Dead computation => inefficiency.
 
-8. Have 2 map operations for `sortedBalances` array is not neccessary
+9. Have 2 map operations for `sortedBalances` array is not neccessary
 ```typescript
 const formattedBalances = sortedBalances.map((balance: WalletBalance) => {
     return {
@@ -160,7 +167,7 @@ const rows = sortedBalances.map((balance: WalletBalance, index: number) => {
   })
 ```
 
-9. Rendering rows using index as key
+10. Rendering rows using index as key
 ```
 key={index}
 ```
