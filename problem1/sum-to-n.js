@@ -4,6 +4,8 @@ const applySign = (n, sum) => (n < 0 ? -sum : sum);
 
 // 3 functions bellow use Math.abs and applySign to support negative n
 // Note: Assuming this input n will always produce a result lesser than Number.MAX_SAFE_INTEGER as the requirement stated.
+
+// 1. using for loop
 const sum_to_n_a = function(n) {
     // use positive number
     let absN = Math.abs(n);
@@ -17,6 +19,7 @@ const sum_to_n_a = function(n) {
     return applySign(n, sum);
 };
 
+// 2. using while loop
 const sum_to_n_b = function(n) {
     // use positive number
     let absN = Math.abs(n);
@@ -33,6 +36,7 @@ const sum_to_n_b = function(n) {
     return applySign(n, sum);
 };
 
+// 3. using recursive function
 const sum_to_n_c = function(n) {
     // use positive number
     let absN = Math.abs(n);

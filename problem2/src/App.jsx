@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-
+/**
+ * determine token icon component, if image found in /public/tokens folder for symbol,
+ * then display the image, otherwhile display first letter of the symbol
+ * @param {symbol: string}  
+ * @returns token icon component
+ */
 function TokenIcon({ symbol }) {
   const [errored, setErrored] = useState(false);
 
@@ -21,6 +26,11 @@ function TokenIcon({ symbol }) {
   );
 }
 
+/**
+ * Allow user to select coin from dropdown
+ * @param {value: string, onChange: setter, coins: list of coins} param0 
+ * @returns CoinSelector component showing coin icon, coins dropdown list and selected coin
+ */
 function CoinSelector({ value, onChange, coins }) {
   const [open, setOpen] = useState(false);
   return (
@@ -51,7 +61,7 @@ function CoinSelector({ value, onChange, coins }) {
         <div
           className="
             absolute mt-2 w-full z-20
-            rounded-xl overflow-hidden
+            rounded-xl
             backdrop-blur-xl
             bg-white/10
             border border-white/20
@@ -121,18 +131,20 @@ export default function App() {
       return;
     }
     const usdValue = Number(amount) * pricesMap[coin];
-    const received = usdValue / pricesMap[targetCoin];
-    setter(received.toFixed(6));
+    const targetAmount = usdValue / pricesMap[targetCoin];
+    setter(targetAmount.toFixed(6));
   }
 
   // sync amounts depending on which field was edited
   useEffect(() => {
     if (!pricesMap) return;
 
+    // if amount to send is edited, the amount to receive will be updated accordingly
     if (editingSide === "input") {
       convertCoinAmt(inputCoin, inputAmount, outputCoin, setOutputAmount);
     }
 
+    // if amount to receive is edited, the amount to send will be updated accordingly
     if (editingSide === "output") {
       convertCoinAmt(outputCoin, outputAmount, inputCoin, setInputAmount);
     }
@@ -144,7 +156,7 @@ export default function App() {
   }, [pricesMap]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // prevent page loading
     setSwapResponse(null);
     setSwapError(null);
 
