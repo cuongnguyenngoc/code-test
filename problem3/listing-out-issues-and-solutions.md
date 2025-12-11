@@ -16,7 +16,8 @@ Fix:
 export const WalletPage: React.FC<Props> = (props: Props) => {
 ```
 
-3. `getPriority` has some anti-patterns issue
+3. `getPriority` has some anti-patterns and inefficiency issue
+- it is defined in `WalletPage` so it got re-created everytime page render
 - `any` should be avoid as much as possible, param `blockchain` of function `getPriority`, it should have type `string` instead of `any` to avoid unintended value
 - `Zilliqa` and `Neo` value have same return `20` so we can shortern code by 
 ```typescript
@@ -25,7 +26,7 @@ case "Neo": return 20;
 ```
 - `return -99` is not neccessary and magic number, `return -1` should serve same objective and it's commonly used.
 
-Fix: 
+Fix: move `getPriority` outside from `WalletPage`
 ```typescript
 function getPriority(blockchain: string): number {
   switch (blockchain) {
