@@ -65,3 +65,32 @@ export const getResource = async (req: Request, res: Response) => {
   }
 };
 
+// Update resource by ID
+export const updateResource = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const { name, type } = req.body;
+    if (!id) {
+      return res.status(400).json({ error: 'Resource ID is required' });
+    }
+
+    const resourceIndex = db.data.resources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+
+    if (name) {
+      db.data.resources[resourceIndex].name = name;
+    }
+    if (type) {
+      db.data.resources[resourceIndex].type = type;
+    }
+
+    await db.write();
+
+    res.json(db.data.resources[resourceIndex]);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update resource' });
+  }
+}
+
