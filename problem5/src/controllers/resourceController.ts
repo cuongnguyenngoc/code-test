@@ -8,8 +8,21 @@ const genResourceId = (): string => {
   return crypto.randomUUID();
 };
 
-export function isResourceType(value: any): value is ResourceType {
+function isResourceType(value: any): value is ResourceType {
   return Object.values(ResourceType).includes(value);
+}
+
+import { ParsedQs } from 'qs';
+
+function toStringOrUndefined(
+  value: string | ParsedQs | (string | ParsedQs)[] | undefined
+): string | undefined {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) {
+    const first = value.find(v => typeof v === 'string');
+    if (first) return first;
+  }
+  return undefined;
 }
 
 // Create resource controller
@@ -47,9 +60,11 @@ export const getResources = async (req: Request, res: Response) => {
       typeFilter = type as ResourceType; // <-- MUST cast here
     }
 
+    const nameStr = toStringOrUndefined(name);
+
     const resources = await prisma.resource.findMany({
       where: {
-        name: name ? String(name) : undefined,
+        name: nameStr ? { contains: nameStr } : undefined,
         type: typeFilter,
       },
     });
