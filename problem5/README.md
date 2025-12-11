@@ -32,10 +32,10 @@ Server runs at http://localhost:3000.
 
 | Method | Route | Description | Body / Query |
 |--------|-------------------|-------------|--------------|
-| GET    | `/resources`        | List resources | Optional query: `?name=<string>&type=<BOOK|VIDEO|ARTICLE>` |
+| GET    | `/resources`        | List resources | Optional query: `?name=<string>&type=BOOK` |
 | GET    | `/resources/:id`    | Get resource by ID | — |
-| POST   | `/resources`        | Create a resource | `{ "name": "string", "type": "BOOK|VIDEO|ARTICLE" }` |
-| PUT    | `/resources/:id`    | Update a resource | `{ "name": "string", "type": "BOOK|VIDEO|ARTICLE" }` |
+| POST   | `/resources`        | Create a resource | { "name": "string", "type": "BOOK|VIDEO|ARTICLE" } |
+| PUT    | `/resources/:id`    | Update a resource | { "name": "string", "type": "BOOK|VIDEO|ARTICLE" } |
 | DELETE | `/resources/:id`    | Delete a resource | — |
 
 > `type` must be one of: `BOOK`, `VIDEO`, `ARTICLE`  
