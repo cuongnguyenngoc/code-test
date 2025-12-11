@@ -4,16 +4,8 @@ interface WalletBalance {
   blockchain: string;
 }
 
-interface FormattedWalletBalance extends WalletBalance {
-  formatted: string;
-}
-
 interface WalletBalanceWithPriority extends WalletBalance {
   priority: number;
-}
-
-interface Props extends BoxProps {
-
 }
 
 const getPriority = (blockchain: string): number => {
@@ -33,7 +25,7 @@ const getPriority = (blockchain: string): number => {
 }
 
 // we should export WalletPage or it will not be used anywhere
-export const WalletPage: React.FC<Props> = (props: Props) => {
+export const WalletPage: React.FC<BoxProps> = (props: BoxProps) => {
   const { children, ...rest } = props;
   const balances = useWalletBalances();
   const prices = usePrices();

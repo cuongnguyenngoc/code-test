@@ -10,6 +10,12 @@ interface FormattedWalletBalance extends WalletBalance {
 }
 ```
 
+2. `Props` interface doesn't add anything new beyond what `BoxProps` already provides, so creating an empty `Props` interface gives you zero benefit and you should just use `BoxProps` directly
+Fix: 
+```typescript
+export const WalletPage: React.FC<BoxProps> = (props: BoxProps) => {
+```
+
 2. `WalletPage` function is not export so it will not be able to be used anywhere
 Fix:
 ```typescript
