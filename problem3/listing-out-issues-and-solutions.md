@@ -81,7 +81,7 @@
 
         Fix:
 
-          ```typescript
+          ```
             return balances
               .filter((b) => b.amount > 0)   // correct filter
               .map((b) => ({
@@ -195,7 +195,7 @@
       Should use a unique deterministic value (like currency).
 
       Fix:
-        ```typescript
+        ```
         <WalletRow
           className={classes.row}
           key={balance.currency} // use currency as key here
@@ -209,7 +209,7 @@
 
       if it's unintended, we should add it to page
       Fix:
-        ```typescript
+        ```
         return (
           <div {...rest}>
             {children}
