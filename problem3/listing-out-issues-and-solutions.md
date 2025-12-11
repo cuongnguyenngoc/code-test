@@ -185,3 +185,15 @@ Fix:
   formattedAmount={balance.amount.toFixed()}
 />
 ```
+
+11. `children` is not being used
+if it's unintended, we should add it to page
+Fix:
+```typescript
+return (
+  <div {...rest}>
+    {children}
+    {rows}
+  </div>
+)
+```

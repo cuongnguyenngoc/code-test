@@ -64,6 +64,7 @@ export const WalletPage: React.FC<Props> = (props: Props) => {
 
   return (
     <div {...rest}>
+      {children}
       {rows}
     </div>
   )
