@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import crypto from "crypto";
-import { db, Resource } from '../db';
+import prisma from '../dbClient/client';
 
 // create resource id helper
 const genResourceId = (): string => {
@@ -19,10 +19,10 @@ export const createResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Type for resource is required' });
     }
 
-    const newResource: Resource = { id: genResourceId(), name, type };
-    db.data.resources.push(newResource);
-    await db.write();
-    res.status(200).json(newResource);
+    const resourceId = genResourceId();
+    const resource = await prisma.resource.create({ data: { id: resourceId, name, type } });
+
+    res.status(200).json(resource);
   } catch (err) {
     res.status(500).json({ error: 'Failed to create resource' });
   }
@@ -32,16 +32,16 @@ export const createResource = async (req: Request, res: Response) => {
 export const getResources = async (req: Request, res: Response) => {
   try {
     const { name, type } = req.query;
-    let resources = db.data.resources;
-    if (name) {
-      resources = resources.filter(r => r.name === name);
-    }
-    if (type) {
-      resources = resources.filter(r => r.type === type);
-    }
+    const resources = await prisma.resource.findMany({
+      where: {
+        name: name ? String(name) : undefined,
+        type: type ? String(type) : undefined,
+      },
+    });
 
     res.json(resources);
   } catch (err) {
+    console.log('err', err);
     res.status(500).json({ error: 'Failed to list resources' });
   }
 };
@@ -54,10 +54,8 @@ export const getResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Resource ID is required' });
     }
 
-    const resource = db.data.resources.find(r => r.id === id);
-    if (!resource) {
-      return res.status(404).json({ error: 'Resource not found' });
-    }
+    const resource = await prisma.resource.findUnique({ where: { id } });
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
     
     res.json(resource);
   } catch (err) {
@@ -78,21 +76,12 @@ export const updateResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'At least one field (name or type) is required to update' });
     }
 
-    const resourceIndex = db.data.resources.findIndex(r => r.id === id);
-    if (resourceIndex === -1) {
-      return res.status(404).json({ error: 'Resource not found' });
-    }
+    const resource = await prisma.resource.update({
+      where: { id },
+      data: { name, type },
+    });
 
-    if (name) {
-      db.data.resources[resourceIndex].name = name;
-    }
-    if (type) {
-      db.data.resources[resourceIndex].type = type;
-    }
-
-    await db.write();
-
-    res.json(db.data.resources[resourceIndex]);
+    res.json(resource);
   } catch (err) {
     res.status(500).json({ error: 'Failed to update resource' });
   }
@@ -106,13 +95,7 @@ export const deleteResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Resource ID is required' });
     }
 
-    const resourceIndex = db.data.resources.findIndex(r => r.id === id);
-    if (resourceIndex === -1) {
-      return res.status(404).json({ error: 'Resource not found' });
-    }
-
-    db.data.resources.splice(resourceIndex, 1);
-    await db.write();
+    await prisma.resource.delete({ where: { id } });
 
     res.status(200).json({ message: 'Resource deleted successfully' });
   } catch (err) {
