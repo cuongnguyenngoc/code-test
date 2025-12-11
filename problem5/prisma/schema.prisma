@@ -7,9 +7,16 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+// Define the enum
+enum ResourceType {
+  BOOK
+  VIDEO
+  ARTICLE
+}
+
 model Resource {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
-  type      String
-  createdAt DateTime @default(now())
+  type      ResourceType
+  createdAt DateTime     @default(now())
 }

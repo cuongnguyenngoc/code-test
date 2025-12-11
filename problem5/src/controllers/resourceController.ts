@@ -1,11 +1,16 @@
 import { Request, Response } from 'express';
 import crypto from "crypto";
 import prisma from '../dbClient/client';
+import { ResourceType } from '../types/resource';
 
 // create resource id helper
 const genResourceId = (): string => {
   return crypto.randomUUID();
 };
+
+export function isResourceType(value: any): value is ResourceType {
+  return Object.values(ResourceType).includes(value);
+}
 
 // Create resource controller
 export const createResource = async (req: Request, res: Response) => {
@@ -15,8 +20,9 @@ export const createResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Name for resource is required' });
     }
 
-    if (!type) {
-      return res.status(400).json({ error: 'Type for resource is required' });
+    // Check if type is a valid enum value
+    if (!isResourceType(type)) {
+      return res.status(400).json({ error: 'Invalid resource type' });
     }
 
     const resourceId = genResourceId();
@@ -32,10 +38,19 @@ export const createResource = async (req: Request, res: Response) => {
 export const getResources = async (req: Request, res: Response) => {
   try {
     const { name, type } = req.query;
+
+    let typeFilter: ResourceType | undefined;
+    if (type) {
+      if (!isResourceType(type)) {
+        return res.status(400).json({ error: 'Invalid resource type' });
+      }
+      typeFilter = type as ResourceType; // <-- MUST cast here
+    }
+
     const resources = await prisma.resource.findMany({
       where: {
         name: name ? String(name) : undefined,
-        type: type ? String(type) : undefined,
+        type: typeFilter,
       },
     });
 
@@ -74,6 +89,10 @@ export const updateResource = async (req: Request, res: Response) => {
 
     if (!name && !type) {
       return res.status(400).json({ error: 'At least one field (name or type) is required to update' });
+    }
+
+    if (type && !isResourceType(type)) {
+      return res.status(400).json({ error: 'Invalid resource type' });
     }
 
     const resource = await prisma.resource.update({
