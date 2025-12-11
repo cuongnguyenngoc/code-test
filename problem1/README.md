@@ -1,2 +1,2 @@
 To run:
-```node sum-to-n.js`
+```node sum-to-n.js```
