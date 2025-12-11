@@ -1,22 +1,67 @@
 import { Request, Response } from 'express';
+import crypto from "crypto";
 import { db, Resource } from '../db';
 
-// auto-increment helper
-const getNextId = (): number => {
-  const maxId = db.data.resources.reduce((max, r) => Math.max(max, r.id), 0);
-  return maxId + 1;
+// create resource id helper
+const genResourceId = (): string => {
+  return crypto.randomUUID();
 };
 
 // Create resource controller
 export const createResource = async (req: Request, res: Response) => {
   try {
     const { name, type } = req.body;
-    const newResource: Resource = { id: getNextId(), name, type };
+    if (!name) {
+      return res.status(400).json({ error: 'Name for resource is required' });
+    }
+
+    if (!type) {
+      return res.status(400).json({ error: 'Type for resource is required' });
+    }
+
+    const newResource: Resource = { id: genResourceId(), name, type };
     db.data.resources.push(newResource);
     await db.write();
     res.status(200).json(newResource);
   } catch (err) {
     res.status(500).json({ error: 'Failed to create resource' });
+  }
+};
+
+// get resources with optional filters by name or type
+export const getResources = async (req: Request, res: Response) => {
+  try {
+    const { name, type } = req.query;
+    let resources = db.data.resources;
+    if (name) {
+      resources = resources.filter(r => r.name === name);
+    }
+    if (type) {
+      resources = resources.filter(r => r.type === type);
+    }
+
+    res.json(resources);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to list resources' });
+  }
+};
+
+// Get resource by ID
+export const getResource = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).json({ error: 'Resource ID is required' });
+    }
+
+    const resource = db.data.resources.find(r => r.id === id);
+    if (!resource) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+    
+    res.json(resource);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get resource' });
   }
 };
 

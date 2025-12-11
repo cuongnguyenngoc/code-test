@@ -3,7 +3,7 @@ import { JSONFile } from 'lowdb/node';
 import { join } from 'path';
 
 export type Resource = {
-  id: number;
+  id: string;
   name: string;
   type: string;
 };
