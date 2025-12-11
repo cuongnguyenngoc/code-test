@@ -14,3 +14,6 @@ npm install
 ```bash
 npm run dev
 ```
+
+- Can visit this site for project's preview
+https://code-test-khaki.vercel.app/
