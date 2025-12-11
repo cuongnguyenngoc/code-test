@@ -98,3 +98,25 @@ export const updateResource = async (req: Request, res: Response) => {
   }
 }
 
+// Delete resource by ID
+export const deleteResource = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).json({ error: 'Resource ID is required' });
+    }
+
+    const resourceIndex = db.data.resources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+
+    db.data.resources.splice(resourceIndex, 1);
+    await db.write();
+
+    res.status(200).json({ message: 'Resource deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete resource' });
+  }
+}
+

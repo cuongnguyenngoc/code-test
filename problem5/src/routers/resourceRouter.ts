@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createResource, getResource, getResources, updateResource } from "../controllers/resourceController";
+import { createResource, deleteResource, getResource, getResources, updateResource } from "../controllers/resourceController";
 
 const router = Router();
 
@@ -14,5 +14,8 @@ router.get("/:id", getResource);
 
 // Update /resources/:id - Update resource by ID
 router.put("/:id", updateResource);
+
+// Delete /resources/:id - Delete resource by ID
+router.delete("/:id", deleteResource);
 
 export default router;
