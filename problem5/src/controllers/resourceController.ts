@@ -97,7 +97,7 @@ export const updateResource = async (req: Request, res: Response) => {
 
     const resource = await prisma.resource.update({
       where: { id },
-      data: { name, type },
+      data: { name, type, updatedAt: new Date() },
     });
 
     res.json(resource);
