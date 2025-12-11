@@ -74,6 +74,10 @@ export const updateResource = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Resource ID is required' });
     }
 
+    if (!name && !type) {
+      return res.status(400).json({ error: 'At least one field (name or type) is required to update' });
+    }
+
     const resourceIndex = db.data.resources.findIndex(r => r.id === id);
     if (resourceIndex === -1) {
       return res.status(404).json({ error: 'Resource not found' });
