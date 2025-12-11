@@ -1,4 +1,4 @@
-#Here are the list of computational inefficiencies and anti-patterns found in the code in original.tsx
+Here are the list of computational inefficiencies and anti-patterns found in the code in original.tsx
 
 1. Dulicated code:
 - `FormattedWalletBalance` and `WalletBalance`, both interfaces shared same fields `currency` and `amount`. `FormattedWalletBalance` has new field `formatted` so `FormattedWalletBalance` can `extends` from `WalletBalance` to avoid duplicate code and have benefits of extends (like `FormattedWalletBalance` can be used anywhere a `WalletBalance` is expected)
